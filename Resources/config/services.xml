@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="cravler_remote.proxy.service.class">Cravler\RemoteBundle\Proxy\Service</parameter>
+        <parameter key="cravler_remote.service.rooms_chain.class">Cravler\RemoteBundle\Service\RoomsChain</parameter>
+        <parameter key="cravler_remote.service.remote_service.class">Cravler\RemoteBundle\Service\RemoteService</parameter>
+        <parameter key="cravler_remote.service.endpoints_chain.class">Cravler\RemoteBundle\Service\EndpointsChain</parameter>
+        <parameter key="cravler_remote.service.connection_handlers_chain.class">Cravler\RemoteBundle\Service\ConnectionHandlersChain</parameter>
+        <parameter key="cravler_remote.security.token_factory.class">Cravler\RemoteBundle\Security\TokenFactory</parameter>
+        <parameter key="cravler_remote.security.authorization.storage.class">Cravler\RemoteBundle\Security\Authorization\Storage</parameter>
+    </parameters>
+
+    <services>
+        <service id="cravler_remote.service.connection_handlers_chain"
+                 class="%cravler_remote.service.connection_handlers_chain.class%">
+        </service>
+
+        <service id="cravler_remote.service.endpoints_chain"
+                 class="%cravler_remote.service.endpoints_chain.class%">
+        </service>
+
+        <service id="cravler_remote.service.rooms_chain"
+                 class="%cravler_remote.service.rooms_chain.class%">
+        </service>
+
+        <service id="cravler_remote.security.authorization.storage"
+                 class="%cravler_remote.security.authorization.storage.class%">
+        </service>
+
+        <service id="cravler_remote.security.token_factory"
+                 class="%cravler_remote.security.token_factory.class%">
+
+            <argument>%cravler_remote.config.secret%</argument>
+            <argument>null</argument>
+        </service>
+
+        <service id="cravler_remote.proxy.service"
+                 class="%cravler_remote.proxy.service.class%">
+
+            <argument type="service" id="cravler_remote.security.token_factory" />
+            <argument type="service" id="cravler_remote.security.authorization.storage" />
+            <argument type="service" id="cravler_remote.service.endpoints_chain" />
+            <argument type="service" id="cravler_remote.service.connection_handlers_chain" />
+        </service>
+
+        <service id="cravler_remote.service.remote_service"
+                 class="%cravler_remote.service.remote_service.class%">
+
+            <argument type="service" id="cravler_remote.proxy.service" />
+            <argument>%cravler_remote.config.server_port%</argument>
+            <argument>%cravler_remote.config.remote_port%</argument>
+        </service>
+    </services>
+
+</container>

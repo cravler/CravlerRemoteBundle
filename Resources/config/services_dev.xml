@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="cravler_remote.room.example.class">Cravler\RemoteBundle\Room\Example</parameter>
+        <parameter key="cravler_remote.endpoint.example.class">Cravler\RemoteBundle\Endpoint\Example</parameter>
+    </parameters>
+
+    <services>
+        <service id="cravler_remote.room.example"
+                 class="%cravler_remote.room.example.class%">
+
+            <tag name="cravler_remote.room" />
+        </service>
+
+        <service id="cravler_remote.endpoint.example"
+                 class="%cravler_remote.endpoint.example.class%">
+                 
+            <argument type="service" id="cravler_remote.room.example" />
+
+            <tag name="cravler_remote.endpoint" />
+        </service>
+    </services>
+
+</container>

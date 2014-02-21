@@ -1,0 +1,47 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://{{ app.request.host }}:{{ cravler_remote_config_app_port }}/browser.js"></script>
+
+<div>CravlerRemoteBundle DEMO</div>
+
+<script type="text/javascript">
+
+CravlerRemote.init({
+    url: 'http://{{ app.request.host }}:{{ cravler_remote_config_app_port }}',
+    session: '{{ app.session.id }}',
+    rooms: {% render controller("CravlerRemoteBundle:Remote:rooms", { "request": app.request }) %},
+    token: function(data, callback) {
+        jQuery.ajax({
+            type: "POST",
+            url: '{{ path('cravler_remote_token') }}',
+            data: data
+        }).done(function(token) {
+            callback(token);
+        });
+    }
+});
+
+CravlerRemote.endpointsReady(function() {
+
+    if (CravlerRemote.endpointExists('Endpoints.CravlerRemote_Example.foo')) {
+        Endpoints.CravlerRemote_Example.foo(function(msg) {
+            console.log('foo: ', msg);
+        });
+    }
+
+    if (CravlerRemote.endpointExists('Endpoints.CravlerRemote_Example.bar')) {
+        Endpoints.CravlerRemote_Example.bar(function(msg) {
+            console.log('bar: ', msg);
+        });
+    }
+
+    CravlerRemote.onMessage('cravler_remote.example.bar', function(message) {
+        console.log('all: ', message);
+    });
+
+    CravlerRemote.onMessage('cravler_remote.example.bar::second', function(message) {
+        console.log('only second: ', message);
+    });
+
+});
+
+</script>

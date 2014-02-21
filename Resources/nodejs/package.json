@@ -1,0 +1,26 @@
+{
+    "name": "CravlerRemote",
+    "description": "Symfony remote proxy",
+    "version": "0.0.1",
+    "author": "Sergei Vizel",
+    "license": "MIT",
+    "main": "app.js",
+    "dependencies": {
+        "express": "~3.4.7",
+        "primus": "~1.5.2",
+        "primus-emitter": "~2.0.5",
+        "primus-multiplex": "~2.2.2",
+        "primus-rooms": "~2.3.0",
+        "upnode": "~0.4.3",
+        "sockjs": "~0.3.8"
+    },
+    "devDependencies": {
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "symfony",
+        "remote"
+    ]
+}
