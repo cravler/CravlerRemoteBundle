@@ -62,7 +62,7 @@ sudo bash -c "app/console cravler:remote:ubuntu:upstart app > /etc/init/cravler-
 
 ## Example of Usage
 
-[CravlerChatBundle](/cravler/CravlerChatBundle)
+[CravlerChatBundle](https://github.com/cravler/CravlerChatBundle)
 
 ## License
 
