@@ -121,32 +121,61 @@ class Service
         $method   = substr(strrchr($name, '.'), 1);
         $endpoint = $this->endpointsChain->getEndpoint(str_replace('.' . $method, '', $name));
 
+        $offset = 0;
+        $args = array();
         $userTokenKey = false;
-        $arguments = (array) $arguments;
         $rfl = new \ReflectionMethod($endpoint, $method);
+
         foreach ($rfl->getParameters() as $key => $param) {
             $clazz = $param->getClass();
-            if ($clazz) {
+            $haystack = array(
+                'token' => 'Cravler\RemoteBundle\Security\Token',
+                'proxy' => 'Cravler\RemoteBundle\Proxy\RemoteProxy',
+            );
+            if ($clazz && in_array($clazz->getName(), $haystack)) {
                 $className = $clazz->getName();
-                if ('Cravler\RemoteBundle\Security\Token' == $className) {
+                if ($haystack['token'] == $className) {
                     $userTokenKey = $key;
+                    $args[$key] = 'undefined';
                 }
+                else if ($haystack['proxy'] == $className) {
+                    $args[$key] = new RemoteProxy($this->remote);
+                }
+            } else {
+                if (isset($arguments->{$offset})) {
+                    $args[$key] = $arguments->{$offset};
+                }
+                $offset++;
 
-                if ('Cravler\RemoteBundle\Proxy\RemoteProxy' == $className) {
-                    array_splice($arguments, $key, 0, array(new RemoteProxy($this->remote)));
+                if (!isset($args[$key])) {
+                    if ($param->isDefaultValueAvailable()) {
+                        $args[$key] = $param->getDefaultValue();
+                    } else if ($param->isArray()) {
+                        $args[$key] = array();
+                    } else if ($param->isCallable()) {
+                        $args[$key] = function() {};
+                    } else {
+                        $args[$key] = null;
+                    }
+                } else {
+                    if ($param->isArray() && !is_array($args[$key])) {
+                        $args[$key] = (array) json_decode(json_encode($args[$key]), true);
+                    } else if ($param->isCallable() && !is_callable($args[$key])) {
+                        $args[$key] = function() {};
+                    }
                 }
             }
         }
 
         if (false !== $userTokenKey) {
-            $this->remote->userToken($remoteToken, function($token) use ($endpoint, $method, $arguments, $userTokenKey) {
+            $this->remote->userToken($remoteToken, function($token) use ($endpoint, $method, $args, $userTokenKey) {
                 $token = json_decode(json_encode($token), true);
                 $token = $this->factory->createToken((array) $token);
-                array_splice($arguments, $userTokenKey, 0, array($token));
-                call_user_func_array(array($endpoint, $method), $arguments);
+                $args[$userTokenKey] = $token;
+                call_user_func_array(array($endpoint, $method), $args);
             });
         } else {
-            call_user_func_array(array($endpoint, $method), $arguments);
+            call_user_func_array(array($endpoint, $method), $args);
         }
     }
 }
