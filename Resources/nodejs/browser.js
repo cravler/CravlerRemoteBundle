@@ -24,13 +24,11 @@
         }
     };
 
-    var createEndpoint = function(ename, primus) {
-        var parts = ename.split('.');
-        var method = parts.pop();
-        var endpoint = jUtil.ns(parts.join('.'));
-        endpoint[method] = function() {
+    var createEndpointMethod = function(endpoint, method, primus) {
+        var _endpoint = jUtil.ns('Endpoints.' + endpoint);
+        _endpoint[method] = function() {
             var args = Array.prototype.slice.call(arguments);
-            args.unshift(ename)
+            args.unshift(endpoint + '.' + method);
             primus.send.apply(primus, args);
         };
     };
@@ -68,14 +66,24 @@
                 onMessage(message);
             });
             primus.on('endpoints', function(endpoints) {
-                for (var i in endpoints) {
-                    var ename = endpoints[i];
-                    createEndpoint(ename, primus);
+                for (var endpoint in endpoints) {
+                    var methods = endpoints[endpoint];
+                    for (var i in methods) {
+                        createEndpointMethod(endpoint, methods[i], primus);
+                    }
                 }
                 onEndpoints(endpoints);
             });
 
-            primus.send('join', params['rooms']);
+            if (typeof params['rooms'] == 'function') {
+                var getRooms = params['rooms'];
+                getRooms(function(rooms) {
+                    primus.send('join',rooms);
+                });
+            } else {
+                primus.send('join', params['rooms']);
+            }
+
             primus.send('init', params['session'], function(client) {
                 getToken(client, function(token) {
                     primus.send('authorize', token);
@@ -86,12 +94,9 @@
 
     if (typeof window === "object" && typeof window.document === "object") {
         window.CravlerRemote = new function() {
-            var endpoints = [], events = {}, promise;
+            var events = {}, promise;
 
             promise = jUtil.createPromise(this, 'endpoints');
-            promise.then(function(data) {
-                endpoints = data;
-            });
 
             this.init = function(params) {
                 initScripts([
@@ -116,12 +121,36 @@
                 });
             };
 
-            this.endpointExists = function(ename) {
-                return endpoints.indexOf(ename) !== -1;
-            };
-
             this.endpointsReady = function(fn) {
                 promise.then(fn);
+            };
+
+            this.getEndpoint = function(endpoint, fn) {
+                this.endpointsReady(function(endpoints) {
+                    if (typeof endpoints[endpoint] !== 'undefined') {
+                        fn(jUtil.ns('Endpoints.' + endpoint));
+                    } else {
+                        fn(null);
+                    }
+                });
+            };
+
+            this.invoke = function() {
+                var args = Array.prototype.slice.call(arguments);
+                var ename = args.shift();
+                var parts = ename.split('.');
+                this.getEndpoint(parts[0], function(endpoint) {
+                    if (endpoint) {
+                        if (typeof endpoint[parts[1]] == 'function') {
+                            var method = endpoint[parts[1]];
+                            method.apply(method, args);
+                        } else {
+                            console.error('Method "' + ename + '" not defined!');
+                        }
+                    } else {
+                        console.error('Endpoint "' + parts[0] + '" not defined!');
+                    }
+                });
             };
 
             this.onMessage = function(eventName, fn, scope) {

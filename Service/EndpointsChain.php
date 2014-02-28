@@ -20,10 +20,9 @@ class EndpointsChain
         $reflection = new \ReflectionClass($endpoint);
         list($bundle, $prefix) = explode('Bundle\\', $reflection->getNamespaceName());
         $prefix = explode('\\', $prefix);
-        if ('Endpoints' !== $prefix[0]) {
-            $prefix[0] = 'Endpoints';
-        }
-        $key = array_shift($prefix) . '.' . str_replace('\\', '', $bundle);
+        array_shift($prefix);
+
+        $key = str_replace('\\', '', $bundle);
         if (count($prefix)) {
             $key .= '_' . implode('_', $prefix);
         }
@@ -50,8 +49,13 @@ class EndpointsChain
         foreach ($this->endpoints as $name => $endpoint) {
             $methods = get_class_methods($endpoint);
             foreach ($methods as $method) {
-                if ('__construct' === $method) continue;
-                $result[] = $name . '.' . $method;
+                if ('__construct' === $method) {
+                    continue;
+                }
+                if (!isset($result[$name])) {
+                    $result[$name] = array();
+                }
+                $result[$name][] = $method;
             }
         }
 

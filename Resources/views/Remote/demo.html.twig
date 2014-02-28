@@ -20,26 +20,40 @@ CravlerRemote.init({
     }
 });
 
-CravlerRemote.endpointsReady(function() {
+CravlerRemote.onMessage('cravler_remote.example.bar', function(message) {
+    console.log('all: ', message);
+});
 
-    if (CravlerRemote.endpointExists('Endpoints.CravlerRemote_Example.foo')) {
-        Endpoints.CravlerRemote_Example.foo(function(msg) {
-            console.log('foo: ', msg);
-        });
-    }
+CravlerRemote.onMessage('cravler_remote.example.bar::second', function(message) {
+    console.log('only second: ', message);
+});
 
-    if (CravlerRemote.endpointExists('Endpoints.CravlerRemote_Example.bar')) {
-        Endpoints.CravlerRemote_Example.bar(function(msg) {
-            console.log('bar: ', msg);
-        });
-    }
+CravlerRemote.invoke('CravlerRemote_Example.foo', function(msg) {
+    console.log('1 >>> foo: ', msg);
+});
 
-    CravlerRemote.onMessage('cravler_remote.example.bar', function(message) {
-        console.log('all: ', message);
+CravlerRemote.invoke('CravlerRemote_Example.bar', function(msg) {
+    console.log('1 >>> bar: ', msg);
+});
+
+CravlerRemote.getEndpoint('CravlerRemote_Example', function(endpoint) {
+
+    endpoint.foo(function(msg) {
+        console.log('2 >>> foo: ', msg);
+    });
+    endpoint.bar(function(msg) {
+        console.log('2 >>> bar: ', msg);
     });
 
-    CravlerRemote.onMessage('cravler_remote.example.bar::second', function(message) {
-        console.log('only second: ', message);
+});
+
+CravlerRemote.endpointsReady(function(endpoints) {
+
+    Endpoints.CravlerRemote_Example.foo(function(msg) {
+        console.log('3 >>> foo: ', msg);
+    });
+    Endpoints.CravlerRemote_Example.bar(function(msg) {
+        console.log('3 >>> bar: ', msg);
     });
 
 });

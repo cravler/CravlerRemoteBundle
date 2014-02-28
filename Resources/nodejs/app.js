@@ -209,9 +209,12 @@ primus.on('connection', function(spark) {
                         remote.handle(authToken, spark.storage.remoteKey, 'connect');
 
                         remote.endpoints(authToken, spark.storage.remoteKey, function(endpoints) {
-                            for (var i in endpoints) {
-                                var ename = endpoints[i];
-                                assignListeners(ename, spark);
+                            for (var endpoint in endpoints) {
+                                var methods = endpoints[endpoint];
+                                for (var i in methods) {
+                                    var ename = endpoint + '.' + methods[i];
+                                    assignListeners(ename, spark);
+                                }
                             }
 
                             spark.send('endpoints', endpoints);
