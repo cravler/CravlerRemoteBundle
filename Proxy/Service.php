@@ -73,15 +73,13 @@ class Service
 
         $handlers = $this->connectionHandlersChain->getHandlers();
 
-        $remote = $this->remote;
-        $factory = $this->factory;
-        $this->remote->userToken($remoteToken, function($token) use ($remote, $factory, $handlers, $type, $cb) {
+        $this->remote->userToken($remoteToken, function($token) use ($handlers, $type, $cb) {
             $token = json_decode(json_encode($token), true);
-            $token = $factory->createToken((array) $token);
+            $token = $this->factory->createToken((array) $token);
 
             foreach ($handlers as $handler) {
                 /* @var ConnectionHandlerInterface $handler */
-                $handler->handle($type, $token, new RemoteProxy($remote));
+                $handler->handle($type, $token, new RemoteProxy($this->remote));
             }
 
             if (is_callable($cb)) {
@@ -170,10 +168,9 @@ class Service
         }
 
         if (false !== $userTokenKey) {
-            $factory = $this->factory;
-            $this->remote->userToken($remoteToken, function($token) use ($factory, $endpoint, $method, $args, $userTokenKey) {
+            $this->remote->userToken($remoteToken, function($token) use ($endpoint, $method, $args, $userTokenKey) {
                 $token = json_decode(json_encode($token), true);
-                $token = $factory->createToken((array) $token);
+                $token = $this->factory->createToken((array) $token);
                 $args[$userTokenKey] = $token;
                 call_user_func_array(array($endpoint, $method), $args);
             });
