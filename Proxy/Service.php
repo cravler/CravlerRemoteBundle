@@ -73,14 +73,15 @@ class Service
 
         $handlers = $this->connectionHandlersChain->getHandlers();
 
+        $remote = $this->remote;
         $factory = $this->factory;
-        $this->remote->userToken($remoteToken, function($token) use ($factory, $handlers, $type, $cb) {
+        $this->remote->userToken($remoteToken, function($token) use ($remote, $factory, $handlers, $type, $cb) {
             $token = json_decode(json_encode($token), true);
             $token = $factory->createToken((array) $token);
 
             foreach ($handlers as $handler) {
                 /* @var ConnectionHandlerInterface $handler */
-                $handler->handle($type, $token, new RemoteProxy($this->remote));
+                $handler->handle($type, $token, new RemoteProxy($remote));
             }
 
             if (is_callable($cb)) {
