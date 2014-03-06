@@ -49,6 +49,19 @@ class Service
     }
 
     /**
+     * @param $authToken
+     * @return bool
+     */
+    private function accessGranted($authToken)
+    {
+        $authToken = json_decode(json_encode($authToken), true);
+        if ($this->storage->tokenExists((array) $authToken)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param $cb
      */
     public function ping($cb = null)
@@ -66,10 +79,7 @@ class Service
      */
     public function handle($authToken = array(), $remoteToken = array(), $type = null, $cb = null)
     {
-        $authToken = json_decode(json_encode($authToken), true);
-        if (!$this->storage->tokenExists((array) $authToken)) {
-            return;
-        }
+        if (!$this->accessGranted($authToken)) return;
 
         $handlers = $this->connectionHandlersChain->getHandlers();
 
@@ -95,10 +105,7 @@ class Service
      */
     public function endpoints($authToken = array(), $remoteToken = array(), $cb = null)
     {
-        $authToken = json_decode(json_encode($authToken), true);
-        if (!$this->storage->tokenExists((array) $authToken)) {
-            return;
-        }
+        if (!$this->accessGranted($authToken)) return;
 
         if (is_callable($cb)) {
             $cb($this->endpointsChain->getKeys());
@@ -113,10 +120,7 @@ class Service
      */
     public function call($authToken = array(), $remoteToken = array(), $name = null, $arguments = array())
     {
-        $authToken = json_decode(json_encode($authToken), true);
-        if (!$this->storage->tokenExists((array) $authToken)) {
-            return;
-        }
+        if (!$this->accessGranted($authToken)) return;
 
         $method   = substr(strrchr($name, '.'), 1);
         $endpoint = $this->endpointsChain->getEndpoint(str_replace('.' . $method, '', $name));
