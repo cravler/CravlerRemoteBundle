@@ -19,7 +19,7 @@
     "require": {
         "php": ">=5.4.0",
         "symfony/framework-bundle": "~2.3",
-        "dnode/dnode": "~0.2.0"
+        "cravler/dnode": "~0.2.0"
     },
     "autoload": {
         "psr-0": { "Cravler\\RemoteBundle": "" }

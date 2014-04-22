@@ -2,6 +2,7 @@
 
 namespace Cravler\RemoteBundle\Connection;
 
+use React\EventLoop\LoopInterface;
 use Cravler\RemoteBundle\Security\Token;
 use Cravler\RemoteBundle\Proxy\RemoteProxy;
 
@@ -18,5 +19,5 @@ interface ConnectionHandlerInterface
      * @param Token $token
      * @param RemoteProxy $remote
      */
-    public function handle($type, Token $token, RemoteProxy $remote);
+    public function handle($type, Token $token, RemoteProxy $remote, LoopInterface $loop);
 }

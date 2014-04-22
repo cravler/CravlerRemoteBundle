@@ -31,9 +31,4 @@ class RemoteProxy
     {
         return call_user_func_array(array($this->remote, 'dispatch'), func_get_args());
     }
-
-    public function wait()
-    {
-        return call_user_func_array(array($this->remote, 'wait'), func_get_args());
-    }
 }

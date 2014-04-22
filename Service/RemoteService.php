@@ -4,7 +4,7 @@ namespace Cravler\RemoteBundle\Service;
 
 use DNode\DNode;
 use DNode\RemoteProxy as DNodeRemoteProxy;
-use React\EventLoop\StreamSelectLoop;
+use React\EventLoop;
 use Cravler\RemoteBundle\Proxy\Service;
 use Cravler\RemoteBundle\Proxy\RemoteProxy;
 
@@ -62,9 +62,9 @@ class RemoteService
     }
 
     /**
-     * @param StreamSelectLoop $loop
+     * @param EventLoop\LoopInterface $loop
      */
-    private function runListenLoop(StreamSelectLoop $loop)
+    private function runListenLoop(EventLoop\LoopInterface $loop)
     {
         try {
             $loop->run();
@@ -79,7 +79,8 @@ class RemoteService
      */
     public function listen(\Closure $cb)
     {
-        $loop = new StreamSelectLoop();
+        $loop = EventLoop\Factory::create();
+        $this->service->loop =& $loop;
         $server = new DNode($loop, $this->service);
         $server->listen($this->listenPort, $cb);
 

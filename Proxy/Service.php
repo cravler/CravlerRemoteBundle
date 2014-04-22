@@ -89,7 +89,7 @@ class Service
 
             foreach ($handlers as $handler) {
                 /* @var ConnectionHandlerInterface $handler */
-                $handler->handle($type, $token, new RemoteProxy($this->remote));
+                $handler->handle($type, $token, new RemoteProxy($this->remote), $this->loop);
             }
 
             if (is_callable($cb)) {
@@ -135,6 +135,7 @@ class Service
             $haystack = array(
                 'token' => 'Cravler\RemoteBundle\Security\Token',
                 'proxy' => 'Cravler\RemoteBundle\Proxy\RemoteProxy',
+                'loop'  => 'React\EventLoop\LoopInterface',
             );
             if ($clazz && in_array($clazz->getName(), $haystack)) {
                 $className = $clazz->getName();
@@ -144,6 +145,9 @@ class Service
                 }
                 else if ($haystack['proxy'] == $className) {
                     $args[$key] = new RemoteProxy($this->remote);
+                }
+                else if ($haystack['loop'] == $className) {
+                    $args[$key] = $this->loop;
                 }
             } else {
                 if (isset($arguments->{$offset})) {

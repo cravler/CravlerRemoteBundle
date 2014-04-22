@@ -9,6 +9,7 @@ var env = process.env.NODE_ENV || 'development';
 var appPort = process.env.NODE_APP_PORT || 8080;
 var remotePort = process.env.NODE_REMOTE_PORT || 8081;
 var serverPort = process.env.NODE_SERVER_PORT || 8082;
+var serverHost = process.env.NODE_SERVER_HOST || 'localhost';
 var secret = process.env.NODE_SECRET || 'ThisTokenIsNotSoSecretChangeIt';
 
 var up = null;
@@ -106,9 +107,6 @@ var api = {
         };
         cb(authToken);
     },
-    wait: function(cb, seconds) {
-        setTimeout(cb, seconds * 1000);
-    },
     userToken: function(remoteKey, cb) {
         var userToken = null;
         if (JSON.stringify(remoteKey) === JSON.stringify(createRemoteKey(remoteKey.id, remoteKey.session))) {
@@ -160,7 +158,7 @@ var api = {
         }
     }
 };
-up = upnode(api).connect(serverPort);
+up = upnode(api).connect(serverPort, serverHost);
 
 if (remotePort) {
     upnode(function(client, conn) {
