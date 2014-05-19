@@ -8,6 +8,7 @@ use Cravler\RemoteBundle\DependencyInjection\Compiler\RoomsCompilerPass;
 use Cravler\RemoteBundle\DependencyInjection\Compiler\EndpointsCompilerPass;
 use Cravler\RemoteBundle\DependencyInjection\Compiler\GlobalVariablesCompilerPass;
 use Cravler\RemoteBundle\DependencyInjection\Compiler\ConnectionHandlersCompilerPass;
+use Cravler\RemoteBundle\DependencyInjection\Compiler\PingHandlersCompilerPass;
 
 /**
  * @author Sergei Vizel <sergei.vizel@gmail.com>
@@ -25,5 +26,6 @@ class CravlerRemoteBundle extends Bundle
         $container->addCompilerPass(new EndpointsCompilerPass);
         $container->addCompilerPass(new GlobalVariablesCompilerPass);
         $container->addCompilerPass(new ConnectionHandlersCompilerPass);
+        $container->addCompilerPass(new PingHandlersCompilerPass);
     }
 }

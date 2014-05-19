@@ -4,9 +4,11 @@ namespace Cravler\RemoteBundle\Proxy;
 
 use Cravler\RemoteBundle\Service\EndpointsChain;
 use Cravler\RemoteBundle\Service\ConnectionHandlersChain;
+use Cravler\RemoteBundle\Service\PingHandlersChain;
 use Cravler\RemoteBundle\Security\TokenFactory;
 use Cravler\RemoteBundle\Security\Authorization\Storage;
 use Cravler\RemoteBundle\Connection\ConnectionHandlerInterface;
+use Cravler\RemoteBundle\Connection\PingHandlerInterface;
 use Cravler\RemoteBundle\Proxy\RemoteProxy;
 
 /**
@@ -35,17 +37,30 @@ class Service
     private $connectionHandlersChain;
 
     /**
+     * @var PingHandlersChain
+     */
+    private $pingHandlersChain;
+
+    /**
      * @param TokenFactory $factory
      * @param Storage $storage
      * @param EndpointsChain $endpointsChain
      * @param ConnectionHandlersChain $connectionHandlersChain
+     * @param PingHandlersChain $pingHandlersChain
      */
-    public function __construct(TokenFactory $factory, Storage $storage, EndpointsChain $endpointsChain, ConnectionHandlersChain $connectionHandlersChain)
+    public function __construct(
+        TokenFactory $factory,
+        Storage $storage,
+        EndpointsChain $endpointsChain,
+        ConnectionHandlersChain $connectionHandlersChain,
+        PingHandlersChain $pingHandlersChain
+    )
     {
         $this->factory                 = $factory;
         $this->storage                 = $storage;
         $this->endpointsChain          = $endpointsChain;
         $this->connectionHandlersChain = $connectionHandlersChain;
+        $this->pingHandlersChain       = $pingHandlersChain;
     }
 
     /**
@@ -68,6 +83,12 @@ class Service
     {
         if (is_callable($cb)) {
             $cb();
+        }
+
+        $handlers = $this->pingHandlersChain->getHandlers();
+        foreach ($handlers as $handler) {
+            /* @var PingHandlerInterface $handler */
+            $handler->ping();
         }
     }
 

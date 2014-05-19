@@ -10,6 +10,7 @@
         <parameter key="cravler_remote.service.remote_service.class">Cravler\RemoteBundle\Service\RemoteService</parameter>
         <parameter key="cravler_remote.service.endpoints_chain.class">Cravler\RemoteBundle\Service\EndpointsChain</parameter>
         <parameter key="cravler_remote.service.connection_handlers_chain.class">Cravler\RemoteBundle\Service\ConnectionHandlersChain</parameter>
+        <parameter key="cravler_remote.service.ping_handlers_chain.class">Cravler\RemoteBundle\Service\PingHandlersChain</parameter>
         <parameter key="cravler_remote.security.token_factory.class">Cravler\RemoteBundle\Security\TokenFactory</parameter>
         <parameter key="cravler_remote.security.authorization.storage.class">Cravler\RemoteBundle\Security\Authorization\Storage</parameter>
     </parameters>
@@ -17,6 +18,10 @@
     <services>
         <service id="cravler_remote.service.connection_handlers_chain"
                  class="%cravler_remote.service.connection_handlers_chain.class%">
+        </service>
+
+        <service id="cravler_remote.service.ping_handlers_chain"
+                 class="%cravler_remote.service.ping_handlers_chain.class%">
         </service>
 
         <service id="cravler_remote.service.endpoints_chain"
@@ -45,6 +50,7 @@
             <argument type="service" id="cravler_remote.security.authorization.storage" />
             <argument type="service" id="cravler_remote.service.endpoints_chain" />
             <argument type="service" id="cravler_remote.service.connection_handlers_chain" />
+            <argument type="service" id="cravler_remote.service.ping_handlers_chain" />
         </service>
 
         <service id="cravler_remote.service.remote_service"
