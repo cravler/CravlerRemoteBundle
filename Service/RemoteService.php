@@ -92,7 +92,7 @@ class RemoteService
      */
     public function connect(\Closure $cb)
     {
-        $loop = new StreamSelectLoop();
+        $loop = EventLoop\Factory::create();
         $dnode = new DNode($loop);
         $dnode->on('error', function($e) {
             throw $e;
