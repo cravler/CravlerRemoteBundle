@@ -150,6 +150,21 @@ var api = {
             } catch(e) {}
         }
     },
+    hasRoom: function(remoteKey, room, cb) {
+        if (JSON.stringify(remoteKey) === JSON.stringify(createRemoteKey(remoteKey.id, remoteKey.session))) {
+            try {
+                primus.forEach(function (spark, id, connections) {
+                    if (
+                        id == remoteKey.id
+                            && JSON.stringify(remoteKey) === JSON.stringify(spark.storage.remoteKey)
+                        ) {
+                        cb(spark.rooms().indexOf(room) !== -1);
+                        throw {};
+                    }
+                });
+            } catch(e) {}
+        }
+    },
     dispatch: function(room, obj) {
         if (!obj) {
             primus.send('message', room);

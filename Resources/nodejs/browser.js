@@ -161,6 +161,14 @@
                 }
                 ce.addListener(fn, scope);
             };
+
+            this.offMessage = function(eventName) {
+                eventName = eventName.toLowerCase();
+                var ce = events[eventName] || true;
+                if (typeof ce !== 'boolean') {
+                    ce.clearListeners();
+                }
+            };
         };
     }
 

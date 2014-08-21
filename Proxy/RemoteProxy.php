@@ -27,6 +27,11 @@ class RemoteProxy
         return call_user_func_array(array($this->remote, 'joinRoom'), func_get_args());
     }
 
+    public function hasRoom()
+    {
+        return call_user_func_array(array($this->remote, 'hasRoom'), func_get_args());
+    }
+
     public function dispatch()
     {
         return call_user_func_array(array($this->remote, 'dispatch'), func_get_args());
