@@ -4,7 +4,7 @@ author      "Sergei Vizel"
 
 env RUNAS="www-data"
 env APP="app.js"
-env NODEJS="NODE_ENV=production NODE_APP_PORT={{ APP_PORT }} NODE_REMOTE_PORT={{ REMOTE_PORT }} NODE_SERVER_PORT={{ SERVER_PORT }} NODE_SECRET={{ SECRET }} node"
+env NODEJS="NODE_ENV=production NODE_APP_PORT={{ APP_PORT }} NODE_REMOTE_PORT={{ REMOTE_PORT }} NODE_SERVER_PORT={{ SERVER_PORT }} NODE_SERVER_HOST={{ SERVER_HOST }} NODE_SECRET={{ SECRET }} node"
 env HOMEDIR="{{ HOME_DIR }}"
 
 start on (local-filesystems and net-device-up IFACE=eth0)

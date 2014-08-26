@@ -47,6 +47,7 @@ class UbuntuUpstartCommand extends ContainerAwareCommand
             'APP_PORT'    => $config['app_port'],
             'REMOTE_PORT' => $config['remote_port'],
             'SERVER_PORT' => $config['server_port'],
+            'SERVER_HOST' => $config['server_host'],
         ));
     }
 }

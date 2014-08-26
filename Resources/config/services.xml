@@ -58,7 +58,9 @@
 
             <argument type="service" id="cravler_remote.proxy.service" />
             <argument>%cravler_remote.config.server_port%</argument>
+            <argument>%cravler_remote.config.server_host%</argument>
             <argument>%cravler_remote.config.remote_port%</argument>
+            <argument>%cravler_remote.config.remote_host%</argument>
         </service>
     </services>
 

@@ -24,20 +24,40 @@ class RemoteService
     private $listenPort;
 
     /**
+     * @var string
+     */
+    private $listenHost;
+
+    /**
      * @var int
      */
     private $connectPort;
 
     /**
-     * @param Service $service
-     * @param $listenPort
-     * @param $connectPort
+     * @var string
      */
-    public function __construct(Service $service, $listenPort, $connectPort)
+    private $connectHost;
+
+    /**
+     * @param Service $service
+     * @param int $listenPort
+     * @param int $connectPort
+     * @param string $listenHost
+     * @param string $connectHost
+     */
+    public function __construct(
+        Service $service,
+        $listenPort,
+        $listenHost = '127.0.0.1',
+        $connectPort,
+        $connectHost = '127.0.0.1'
+    )
     {
         $this->service     = $service;
         $this->listenPort  = $listenPort;
+        $this->listenHost  = $listenHost;
         $this->connectPort = $connectPort;
+        $this->connectHost = $connectHost;
     }
 
     /**
@@ -82,7 +102,7 @@ class RemoteService
         $loop = EventLoop\Factory::create();
         $this->service->loop =& $loop;
         $server = new DNode($loop, $this->service);
-        $server->listen($this->listenPort, $cb);
+        $server->listen($this->listenPort, $this->listenHost, $cb);
 
         $this->runListenLoop($loop);
     }
@@ -97,7 +117,7 @@ class RemoteService
         $dnode->on('error', function($e) {
             throw $e;
         });
-        $dnode->connect($this->connectPort, $cb);
+        $dnode->connect($this->connectPort, $this->connectHost, $cb);
 
         $loop->run();
     }
