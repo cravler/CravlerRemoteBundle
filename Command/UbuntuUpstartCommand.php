@@ -41,10 +41,11 @@ class UbuntuUpstartCommand extends ContainerAwareCommand
             $homeDir = dirname($this->getContainer()->get('kernel')->getRootdir());
         }
 
+        list($appListenPort, $appConnectPort) = explode(':', $config['app_port'] . ':');
         echo $templating->render('CravlerRemoteBundle:UbuntuUpstart:' . $type . '.conf.twig', array(
             'HOME_DIR'    => $homeDir,
             'SECRET'      => $config['secret'],
-            'APP_PORT'    => $config['app_port'],
+            'APP_PORT'    => $appListenPort,
             'REMOTE_PORT' => $config['remote_port'],
             'SERVER_PORT' => $config['server_port'],
             'SERVER_HOST' => $config['server_host'],

@@ -38,5 +38,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 ADD docker-entrypoint.sh /cravler-remote.sh
 ENTRYPOINT ["/cravler-remote.sh"]
 
-EXPOSE 80
+EXPOSE 8080 8081 8082
 CMD cravler_remote_run_app

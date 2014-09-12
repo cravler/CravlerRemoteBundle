@@ -21,9 +21,10 @@ class GlobalVariablesCompilerPass implements CompilerPassInterface
             CravlerRemoteExtension::CONFIG_KEY . '.app_port',
         );
         foreach ($parameters as $key) {
+            list($listen, $connect) = explode(':', $container->getParameter($key) . ':');
             $def->addMethodCall('addGlobal', array(
                 str_replace('.', '_', $key),
-                $container->getParameter($key)
+                $connect ?: $listen
             ));
         }
     }
