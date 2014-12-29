@@ -13,7 +13,7 @@
         "primus-multiplex": "~2.2.2",
         "primus-rooms": "~2.3.0",
         "upnode": "~0.4.3",
-        "sockjs": "~0.3.8"
+        "sockjs": "0.3.4"
     },
     "devDependencies": {
     },

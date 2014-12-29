@@ -100,7 +100,7 @@
 
             this.init = function(params) {
                 initScripts([
-                    { type: typeof SockJS, url: 'http://cdn.sockjs.org/sockjs-0.3.min.js' },
+                    { type: typeof SockJS, url: 'http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js' },
                     { type: typeof Primus, url: params['url'] + '/primus/primus.js' }
                 ], function () {
                     initPrimus(params, function(endpoints) {
