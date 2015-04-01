@@ -1,7 +1,5 @@
 
-var window = window || {};
-
-(function(undefined) {
+(function(window, undefined) {
     "use strict";
 
     var jUtil = {};
@@ -217,4 +215,4 @@ var window = window || {};
         module.exports = jUtil;
     }
 
-})();
+})(window || {});
